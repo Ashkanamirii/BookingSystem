@@ -7,7 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.annotation.processing.Generated;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,10 +29,10 @@ public class Booking {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
-    @DateTimeFormat
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fromDate;
 
-    @DateTimeFormat
+    @DateTimeFormat(pattern = "yy-MM-dd HH:mm")
     private LocalDateTime toDate;
 
     @ManyToMany(targetEntity= TimeProperties.class)

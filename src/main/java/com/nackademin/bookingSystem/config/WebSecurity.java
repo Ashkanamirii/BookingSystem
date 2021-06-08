@@ -23,7 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * Copyright: MIT
  */
 @Configuration
-@EnableWebSecurity
+//@EnableWebSecurity //uncomment to run security
 //global methods will be useful to allow users depending their role
 @EnableGlobalMethodSecurity(
         securedEnabled = true,

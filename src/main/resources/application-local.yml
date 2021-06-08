@@ -1,9 +1,9 @@
-#local set up to connect with a docker postgres (will fix later in github some secrets..)
+#local set up to connect with a docker postgres (now using some environment variables)
 spring:
   datasource:
-    username: hodei
-    password: mypass
-    url: jdbc:postgresql://localhost:5432/hodei
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/${POSTGRES_DB}
 
   jpa:
     hibernate:

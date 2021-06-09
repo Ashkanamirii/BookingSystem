@@ -1,0 +1,78 @@
+package com.nackademin.bookingSystem.controller;
+
+import com.nackademin.bookingSystem.dto.LoginReq;
+import com.nackademin.bookingSystem.dto.SignUpReq;
+import com.nackademin.bookingSystem.model.Customer;
+import com.nackademin.bookingSystem.security.JWTtokenProvider;
+import com.nackademin.bookingSystem.service.CustomerService;
+import com.nackademin.bookingSystem.utils.utils.UserException;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+
+/**
+ * Created by Hodei Eceiza
+ * Date: 6/9/2021
+ * Time: 22:14
+ * Project: BookingSystem
+ * Copyright: MIT
+ */
+@RestController
+@RequestMapping("/authenticate")
+public class AuthenticationController {
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private CustomerService customerService;
+
+    @Autowired
+    private JWTtokenProvider tokenProvider;
+
+
+    @PostMapping("login")
+    public ResponseEntity<?> login(@Valid @RequestBody LoginReq loginReq){
+        Authentication authentication =authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginReq.getEmail(),
+                        loginReq.getPassword()));
+        System.out.println(authentication);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        System.out.println(loginReq);
+
+        System.out.println(SecurityContextHolder.getContext().getAuthentication());
+        //set a not ok response, or create a custom JWTAuthenticationResponse
+        return ResponseEntity.ok(tokenProvider.createToken(authentication));
+
+    }
+    @PostMapping("signup")
+    public ResponseEntity<?> signUp(@Valid @RequestBody SignUpReq signUpReq){
+        Customer customer=new Customer();
+        customer.setFirstName(signUpReq.getFirstName());
+        customer.setLastName(signUpReq.getLastName());
+        customer.setEmail(signUpReq.getEmail());
+        customer.setSecurityNumber(signUpReq.getSecurityNumber());
+        customer.setPassword(passwordEncoder.encode(signUpReq.getPassword()));
+        try {
+            customerService.addCustomer(customer);
+        } catch (UserException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok().body("USER CREATED with email"+signUpReq.getEmail());
+    }
+
+}

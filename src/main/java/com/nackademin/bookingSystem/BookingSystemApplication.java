@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 //comment -> (exclude ....) if we want to use spring security
-@SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
+@SpringBootApplication//(exclude = { SecurityAutoConfiguration.class })
 @EnableConfigurationProperties(AppProperties.class)
 public class BookingSystemApplication {
 

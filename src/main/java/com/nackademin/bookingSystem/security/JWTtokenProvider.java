@@ -6,6 +6,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +33,7 @@ public class JWTtokenProvider {
 
     public String createToken(Authentication authentication) {
         //get userdetails from authentication
-        UserPrincipal userPrincipal=(UserPrincipal)authentication.getPrincipal();
+        UserAuthenticated userPrincipal= (UserAuthenticated) authentication.getPrincipal();
         //set expire time
         Date now=new Date();
         Date expireDate=new Date(now.getTime() + appProperties.getAuth().getTokenExpirationsMsec());

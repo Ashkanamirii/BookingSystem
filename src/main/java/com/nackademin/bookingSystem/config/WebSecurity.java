@@ -27,7 +27,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * Copyright: MIT
  */
 @Configuration
-//@EnableWebSecurity //uncomment to run security
+@EnableWebSecurity //uncomment to run security
 //global methods will be useful to allow users depending their role
 @EnableGlobalMethodSecurity(
         securedEnabled = true,
@@ -52,7 +52,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .formLogin().disable()
                 .httpBasic().disable()
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
+                .antMatchers("/authenticate/**").permitAll()
+                //.antMatchers("/authenticate/signup").permitAll()
                 .anyRequest().authenticated()
                ;
         http.addFilterBefore(tokenFilter(), UsernamePasswordAuthenticationFilter.class);

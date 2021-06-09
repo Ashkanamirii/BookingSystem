@@ -32,6 +32,7 @@ public class JWTtokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
+
         //get jwt
         String jwt=getJwt(httpServletRequest);
         //if jwt not empty and passes validation
@@ -40,6 +41,8 @@ public class JWTtokenFilter extends OncePerRequestFilter {
                 String userEmail=tokenProvider.getUserEmailFromJWT(jwt);
                 UserDetails userDetails= customUserDetailsService.loadUserByUsername(userEmail);
                 UsernamePasswordAuthenticationToken authentication=new UsernamePasswordAuthenticationToken(userDetails,null, userDetails.getAuthorities());
+
+
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);

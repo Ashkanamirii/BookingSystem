@@ -2,6 +2,7 @@ package com.nackademin.bookingSystem.security;
 
 import com.nackademin.bookingSystem.config.AppProperties;
 import com.sun.security.auth.UserPrincipal;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.AllArgsConstructor;
@@ -36,9 +37,20 @@ public class JWTtokenProvider {
         Date expireDate=new Date(now.getTime() + appProperties.getAuth().getTokenExpirationsMsec());
 
         //build the JWT
-        return Jwts.builder().setSubject(userPrincipal.getName()).setIssuedAt(new Date()).setExpiration(expireDate).signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret()).compact();
+        return Jwts.builder()
+                .setSubject(userPrincipal.getName())
+                .setIssuedAt(new Date()).setExpiration(expireDate)
+                .signWith(SignatureAlgorithm.HS512, appProperties.getAuth()
+                        .getTokenSecret()).compact();
     }
+    public String getUserEmailFromJWT(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(appProperties.getAuth().getTokenSecret())
+                .parseClaimsJws(token)
+                .getBody();
 
+        return claims.getSubject();
+    }
     public boolean validateToken(String token){
         Jwts.parser().setSigningKey(appProperties.getAuth().getTokenSecret()).parseClaimsJws(token);
         return true;

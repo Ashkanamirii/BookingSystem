@@ -2,10 +2,13 @@ package com.nackademin.bookingSystem.config;
 
 import com.nackademin.bookingSystem.security.CustomOauth2UserService;
 import com.nackademin.bookingSystem.security.CustomUserDetailsService;
+import com.nackademin.bookingSystem.security.JWTtokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * Created by Hodei Eceiza
@@ -31,6 +35,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
         prePostEnabled = true
 )
 public class WebSecurity extends WebSecurityConfigurerAdapter {
+
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
@@ -50,6 +55,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/").permitAll()
                 .anyRequest().authenticated()
                ;
+        http.addFilterBefore(tokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
     @Override //here I used BCRYPT for hashing (with salt), will check whats better (md5 or bcrypt)
     public void configure(AuthenticationManagerBuilder auth) throws Exception{
@@ -60,4 +66,13 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean(BeanIds.AUTHENTICATION_MANAGER)
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+    @Bean
+    public JWTtokenFilter tokenFilter(){
+        return new JWTtokenFilter();
+    }
 }

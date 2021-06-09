@@ -1,6 +1,13 @@
 package com.nackademin.bookingSystem.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -25,6 +32,27 @@ public class JWTtokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
+        //get jwt
+        String jwt=getJwt(httpServletRequest);
+        //if jwt not empty and passes validation
+            if(StringUtils.hasText(jwt)&& tokenProvider.validateToken(jwt)){
+                //get the email (we could get the social security number or the id)
+                String userEmail=tokenProvider.getUserEmailFromJWT(jwt);
+                UserDetails userDetails= customUserDetailsService.loadUserByUsername(userEmail);
+                UsernamePasswordAuthenticationToken authentication=new UsernamePasswordAuthenticationToken(userDetails,null, userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
 
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+            filterChain.doFilter(httpServletRequest,httpServletResponse);
+    }
+
+    //we read the authorization header and save it in a string
+    private String getJwt(HttpServletRequest request){
+        String bearer=request.getHeader("Authorization");
+        if(StringUtils.hasText(bearer)&& bearer.startsWith("Bearer ")){
+            return bearer.substring(7);
+        }
+        return null;
     }
 }

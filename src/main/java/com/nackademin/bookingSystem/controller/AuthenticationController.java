@@ -4,9 +4,9 @@ import com.nackademin.bookingSystem.dto.LoginReq;
 import com.nackademin.bookingSystem.dto.SignUpReq;
 import com.nackademin.bookingSystem.model.Customer;
 import com.nackademin.bookingSystem.security.JWTtokenProvider;
+import com.nackademin.bookingSystem.dto.JwtAuthResponse;
 import com.nackademin.bookingSystem.service.CustomerService;
 import com.nackademin.bookingSystem.utils.utils.UserException;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 
 import javax.validation.Valid;
 
@@ -50,13 +51,12 @@ public class AuthenticationController {
                 new UsernamePasswordAuthenticationToken(
                         loginReq.getEmail(),
                         loginReq.getPassword()));
-        System.out.println(authentication);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        System.out.println(loginReq);
 
-        System.out.println(SecurityContextHolder.getContext().getAuthentication());
-        //set a not ok response, or create a custom JWTAuthenticationResponse
-        return ResponseEntity.ok(tokenProvider.createToken(authentication));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        //create token
+        String token=tokenProvider.createToken(authentication);
+        //set ok response
+        return ResponseEntity.ok(new JwtAuthResponse(token));
 
     }
     @PostMapping("signup")

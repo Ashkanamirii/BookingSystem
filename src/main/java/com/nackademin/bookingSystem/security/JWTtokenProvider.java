@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -25,7 +26,7 @@ import java.util.Date;
  * to create a JWT token
  */
 @AllArgsConstructor
-@Service
+@Component
 public class JWTtokenProvider {
 
     //we will use some properties (expiration time and secret key)
@@ -34,13 +35,14 @@ public class JWTtokenProvider {
     public String createToken(Authentication authentication) {
         //get userdetails from authentication
         UserAuthenticated userPrincipal= (UserAuthenticated) authentication.getPrincipal();
+
         //set expire time
         Date now=new Date();
-        Date expireDate=new Date(now.getTime() + appProperties.getAuth().getTokenExpirationsMsec());
+        Date expireDate=new Date(now.getTime() + appProperties.getAuth().getTokenExpirationMsec());
 
         //build the JWT
         return Jwts.builder()
-                .setSubject(userPrincipal.getName())
+                .setSubject(userPrincipal.getUsername())
                 .setIssuedAt(new Date()).setExpiration(expireDate)
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth()
                         .getTokenSecret()).compact();

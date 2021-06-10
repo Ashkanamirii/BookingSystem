@@ -6,7 +6,7 @@ import com.nackademin.bookingSystem.security.JWTtokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -47,13 +47,13 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
         http
                 .cors().and()
+                .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().csrf().disable()
-                .formLogin().disable()
-                .httpBasic().disable()
+                .and()
+                //.formLogin().disable()
+                //.httpBasic().disable()
                 .authorizeRequests()
                 .antMatchers("/authenticate/**").permitAll()
-                //.antMatchers("/authenticate/signup").permitAll()
                 .anyRequest().authenticated()
                ;
         http.addFilterBefore(tokenFilter(), UsernamePasswordAuthenticationFilter.class);

@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+
 
 /**
  * Created by Hodei Eceiza
@@ -28,10 +30,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Customer customer = customerRepo.findByEmail(email);
 
-
-//we set email as main name, the password, and we add an grantedAuthority,... will check how to implement roles.
-       // return new User(customer.getEmail(), customer.getPassword(), Collections.singletonList(new SimpleGrantedAuthority(("ROLE_USER"))));
-        //return UserAuthenticated.create(customer.getEmail(), customer.getPassword(), Collections.singletonList(new SimpleGrantedAuthority(("ROLE_USER"))));
         return UserAuthenticated.create(customer);
     }
 

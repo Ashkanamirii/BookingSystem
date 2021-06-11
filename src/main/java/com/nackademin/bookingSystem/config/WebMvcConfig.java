@@ -18,7 +18,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry corsRegistry){
         corsRegistry.addMapping("/**")
-                .allowedOrigins("/**")//we allow any origin, maybe we fix only for the client???
+                //.allowedOrigins("/**")//we allow any origin, maybe we fix only for the client???
+                .allowedOriginPatterns("*")//we allow any origin, maybe we fix only for the client???
                 .allowedMethods("GET","PUT","POST","DELETE","PATCH","OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)

@@ -33,6 +33,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
         securedEnabled = true,
         jsr250Enabled = true,
         prePostEnabled = true
+
 )
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 
@@ -54,6 +55,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 //.httpBasic().disable()
                 .authorizeRequests()
                 .antMatchers("/authenticate/**").permitAll()
+                //.antMatchers("/customer/**").permitAll()
                 .anyRequest().authenticated()
                ;
         http.addFilterBefore(tokenFilter(), UsernamePasswordAuthenticationFilter.class);

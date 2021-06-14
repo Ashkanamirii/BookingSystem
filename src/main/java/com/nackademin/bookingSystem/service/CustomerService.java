@@ -39,4 +39,7 @@ public class CustomerService {
             return repository.save(customer);
         }
     }
+    public boolean emailExists(String email){
+        return repository.existsByEmail(email);
+    }
 }

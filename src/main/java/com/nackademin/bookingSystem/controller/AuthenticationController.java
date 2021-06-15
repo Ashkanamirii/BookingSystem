@@ -47,42 +47,40 @@ public class AuthenticationController {
 
 
     @PostMapping("login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginReq loginReq){
-        if(!customerService.emailExists(loginReq.getEmail())){
+    public ResponseEntity<?> login(@Valid @RequestBody LoginReq loginReq) {
+        if (!customerService.emailExists(loginReq.getEmail())) {
             return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("Email not found"); //418
 
         }
-           Authentication authentication = authenticationManager.authenticate(
-                   new UsernamePasswordAuthenticationToken(
-                           loginReq.getEmail(),
-                           loginReq.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginReq.getEmail(),
+                        loginReq.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         //create token
-        String token=tokenProvider.createToken(authentication);
+        String token = tokenProvider.createToken(authentication);
         //set ok response
         return ResponseEntity.ok(new JwtAuthResponse(token));
 
     }
-    @PostMapping("signup")
-    public ResponseEntity<?> signUp(@Valid @RequestBody SignUpReq signUpReq){
 
-        if(customerService.emailExists(signUpReq.getEmail())){
+    @PostMapping("signup")
+    public ResponseEntity<?> signUp(@Valid @RequestBody SignUpReq signUpReq) {
+
+        if (customerService.emailExists(signUpReq.getEmail())) {
             return ResponseEntity.status(403).body("Email is already signed in the database");
 
         }
 
-        Customer customer=new Customer();
+        Customer customer = new Customer();
         customer.setFirstName(signUpReq.getFirstName());
         customer.setLastName(signUpReq.getLastName());
         customer.setEmail(signUpReq.getEmail());
         customer.setSecurityNumber(signUpReq.getSecurityNumber());
         customer.setPassword(passwordEncoder.encode(signUpReq.getPassword()));
-        try {
-            customerService.addCustomer(customer);
-        } catch (UserException e) {
-            e.printStackTrace();
-        }
-        return ResponseEntity.ok().body("USER CREATED with email "+signUpReq.getEmail());
+        customerService.addCustomerAsUser(customer);
+
+        return ResponseEntity.ok().body("USER CREATED with email " + signUpReq.getEmail());
     }
 
 }

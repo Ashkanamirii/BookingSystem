@@ -6,6 +6,7 @@ import com.nackademin.bookingSystem.utils.utils.Encrypt;
 import com.nackademin.bookingSystem.utils.utils.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,12 @@ public class CustomerController {
     @Autowired
     CustomerService service;
 
+    //this request is to test roles are working properly
+    @Secured("ROLE_ADMIN")
+    @GetMapping("foradmin")
+    public String foradmin(){
+        return "this is only for admin";
+    }
     @GetMapping("/get")
     public List<Customer> getAllCustomers() {
         return service.getAllCustomers();

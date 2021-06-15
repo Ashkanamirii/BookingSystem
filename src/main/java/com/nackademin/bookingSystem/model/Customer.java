@@ -14,9 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Ashkan Amiri
@@ -54,8 +52,9 @@ public class Customer {
     @OneToMany(targetEntity = Booking.class)
     private List<Booking> bookingList;
 
-
-
+    @ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    @JoinTable(name="customer_roles",joinColumns =@JoinColumn(name="customer_id"),inverseJoinColumns = @JoinColumn(name="roles_id"))
+    private Set<RolesCustomer> roles=new HashSet<>();
 
     @CreationTimestamp
     private LocalDateTime createDate;

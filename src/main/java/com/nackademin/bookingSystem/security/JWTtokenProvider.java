@@ -1,7 +1,7 @@
 package com.nackademin.bookingSystem.security;
 
 import com.nackademin.bookingSystem.config.AppProperties;
-import com.sun.security.auth.UserPrincipal;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
+
 
 import java.util.Date;
 

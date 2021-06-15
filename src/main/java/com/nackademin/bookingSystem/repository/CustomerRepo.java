@@ -1,7 +1,9 @@
 package com.nackademin.bookingSystem.repository;
 
 import com.nackademin.bookingSystem.model.Customer;
+import com.nackademin.bookingSystem.utils.utils.UserException;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -13,5 +15,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface CustomerRepo extends JpaRepository<Customer,Long> {
-    Customer findByEmail(String email);
+    Customer findByEmail(String email) throws UsernameNotFoundException;
+    boolean existsByEmail(String email);
 }

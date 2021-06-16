@@ -32,6 +32,7 @@ public class CustomerController {
     public String foradmin(){
         return "this is only for admin";
     }
+
     @GetMapping("/get")
     public List<Customer> getAllCustomers() {
         return service.getAllCustomers();

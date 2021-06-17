@@ -33,14 +33,15 @@ public class JWTtokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
 
         //get jwt
-
         String jwt=getJwt(httpServletRequest);
+        //get String
+
         //if jwt not empty and passes validation
             if(StringUtils.hasText(jwt)&& tokenProvider.validateToken(jwt)){
                 //get the email (we could get the social security number or the id)
                 String userEmail=tokenProvider.getUserEmailFromJWT(jwt);
                 UserDetails userDetails= customUserDetailsService.loadUserByUsername(userEmail);
-                UsernamePasswordAuthenticationToken authentication=new UsernamePasswordAuthenticationToken(userDetails,null, userDetails.getAuthorities());
+                UsernamePasswordAuthenticationToken authentication=new UsernamePasswordAuthenticationToken(userDetails,SecurityContextHolder.getContext().getAuthentication(), userDetails.getAuthorities());
 
 
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));

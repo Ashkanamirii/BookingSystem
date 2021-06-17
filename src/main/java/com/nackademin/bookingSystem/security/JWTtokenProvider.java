@@ -43,6 +43,7 @@ public class JWTtokenProvider {
         //build the JWT
         return Jwts.builder()
                 .setSubject(userPrincipal.getUsername())
+                .claim("authority",userPrincipal.getAuthorities())
                 .setIssuedAt(new Date()).setExpiration(expireDate)
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth()
                         .getTokenSecret()).compact();

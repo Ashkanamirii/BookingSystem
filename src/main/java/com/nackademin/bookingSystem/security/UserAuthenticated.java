@@ -1,17 +1,17 @@
 package com.nackademin.bookingSystem.security;
 
 import com.nackademin.bookingSystem.model.Customer;
-import lombok.AllArgsConstructor;
+
 import lombok.Data;
-import lombok.Getter;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
+
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+
 
 /**
  * Created by Hodei Eceiza
@@ -58,7 +58,10 @@ public class UserAuthenticated implements UserDetails {
                     customer.getFirstName(),
                     customer.getLastName(),
                     customer.getSecurityNumber(),
-                    customer.getEmail(), customer.getPassword(), customer.getEmail(), Collections.singletonList(new SimpleGrantedAuthority(("ROLE_USER"))));
+                    customer.getEmail(),
+                    customer.getPassword(),
+                    customer.getEmail(),
+                   customerAuthorities(customer));
 
     }
 
@@ -66,7 +69,14 @@ public class UserAuthenticated implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         //for now there is no roles fixed.
-        return Collections.singletonList(new SimpleGrantedAuthority(("ROLE_USER")));
+       // return Collections.singletonList(new SimpleGrantedAuthority(("ROLE_USER")));
+        return authorities;
+    }
+    private static Collection<GrantedAuthority> customerAuthorities(Customer customer){
+        Collection<GrantedAuthority>authorities=new ArrayList<>();
+        customer.getRoles().stream().forEach(r->authorities.add(new SimpleGrantedAuthority(r.getRoleType())));
+        return authorities;
+
     }
 
     @Override

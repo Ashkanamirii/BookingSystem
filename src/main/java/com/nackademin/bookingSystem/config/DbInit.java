@@ -4,7 +4,6 @@ import com.nackademin.bookingSystem.model.Customer;
 import com.nackademin.bookingSystem.model.RolesCustomer;
 import com.nackademin.bookingSystem.repository.CustomerRepo;
 import com.nackademin.bookingSystem.repository.RolesRepo;
-import com.nackademin.bookingSystem.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;

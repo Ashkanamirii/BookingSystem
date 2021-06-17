@@ -1,18 +1,17 @@
 package com.nackademin.bookingSystem.security;
 
 import com.nackademin.bookingSystem.model.Customer;
-import lombok.AllArgsConstructor;
+
 import lombok.Data;
-import lombok.Getter;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
+
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+
 
 /**
  * Created by Hodei Eceiza

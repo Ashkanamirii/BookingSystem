@@ -6,7 +6,7 @@ import com.nackademin.bookingSystem.model.Customer;
 import com.nackademin.bookingSystem.security.JWTtokenProvider;
 import com.nackademin.bookingSystem.dto.JwtAuthResponse;
 import com.nackademin.bookingSystem.service.CustomerService;
-import com.nackademin.bookingSystem.utils.utils.UserException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

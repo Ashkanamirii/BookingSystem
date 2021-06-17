@@ -48,12 +48,20 @@ public class CustomerService {
     public boolean emailExists(String email){
         return repository.existsByEmail(email);
     }
+
+    public Customer getCustomerByEmail(String email){
+        return repository.findByEmail(email);
+    }
     public Customer addCustomerAsUser(Customer customer){
         return repository.save(insertRole(customer,"ROLE_USER"));
     }
+
+
     public Customer addCustomerAsAdmin(Customer customer){
         return repository.save(insertRole(customer,"ROLE_ADMIN"));
     }
+
+
     private Customer insertRole(Customer customer, String role){
         RolesCustomer roleType=rolesRepository.findByRoleType(role);
         Set<RolesCustomer> customersRoles=customer.getRoles();

@@ -55,7 +55,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 //.httpBasic().disable()
                 .authorizeRequests()
                 .antMatchers("/authenticate/**").permitAll()
-                //.antMatchers("/customer/**").permitAll()
+                .antMatchers("/email/**").permitAll()
                 .anyRequest().authenticated()
                ;
         http.addFilterBefore(tokenFilter(), UsernamePasswordAuthenticationFilter.class);

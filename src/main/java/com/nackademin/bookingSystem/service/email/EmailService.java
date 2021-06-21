@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
  * Copyright: MIT
  */
 public interface EmailService {
-    void sendEmail(String toAddress, String subject, String message);
+    void sendSimpleEmail(String toAddress, String subject, String message);
     void sendEmailAndAttachment(String toAddress, String subject,String message, String attachment)throws MessagingException, FileNotFoundException;
+    void sendHtmlFormatedEmail(EmailContext emailContext)throws MessagingException;
 }

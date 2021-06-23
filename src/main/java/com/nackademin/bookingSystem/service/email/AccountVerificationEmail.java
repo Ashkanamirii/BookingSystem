@@ -1,6 +1,7 @@
 package com.nackademin.bookingSystem.service.email;
 
 import com.nackademin.bookingSystem.model.Customer;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.thymeleaf.context.Context;
 
 /**
@@ -22,5 +23,15 @@ public class AccountVerificationEmail extends EmailContext {
         setFrom("test@email.com");
         setTo(customer.getEmail());
 
+    }
+    public void setToken(String token) {
+
+        super.getContext().put("token", token);
+    }
+
+    public void buildVerificationUrl(final String baseURL, final String token){
+        final String url= UriComponentsBuilder.fromHttpUrl(baseURL)
+                .path("/register/verify").queryParam("token", token).toUriString();
+        super.getContext().put("verificationURL", url);
     }
 }

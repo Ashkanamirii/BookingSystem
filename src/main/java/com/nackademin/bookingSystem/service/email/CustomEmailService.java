@@ -52,7 +52,7 @@ public class CustomEmailService implements EmailService{
     }
 
     @Override
-    public void sendHtmlFormatedEmail(EmailContext emailContext) throws MessagingException {
+    public void sendHtmlFormattedEmail(EmailContext emailContext) throws MessagingException {
         MimeMessage message = emailSender.createMimeMessage();
 
         //format for html

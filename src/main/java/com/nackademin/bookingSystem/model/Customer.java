@@ -3,6 +3,7 @@ package com.nackademin.bookingSystem.model;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -45,8 +46,10 @@ public class Customer {
     @JsonIgnore
     private String password;
 
-    private boolean isAdmin;
-    private boolean isUser;
+    //private boolean isAdmin;
+    //private boolean isUser;
+
+    private boolean accountVerified;
 
     @OneToMany(targetEntity = Booking.class)
     private List<Booking> bookingList;
@@ -54,6 +57,10 @@ public class Customer {
     @ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
     @JoinTable(name="customer_roles",joinColumns =@JoinColumn(name="customer_id"),inverseJoinColumns = @JoinColumn(name="roles_id"))
     private Set<RolesCustomer> roles=new HashSet<>();
+
+
+    @OneToMany(mappedBy = "customer")
+    private Set<VerificationToken> tokens;
 
     @CreationTimestamp
     private LocalDateTime createDate;

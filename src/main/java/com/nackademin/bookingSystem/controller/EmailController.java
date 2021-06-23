@@ -1,6 +1,7 @@
 package com.nackademin.bookingSystem.controller;
 
 import com.nackademin.bookingSystem.model.Customer;
+import com.nackademin.bookingSystem.service.VerificationTokenService;
 import com.nackademin.bookingSystem.service.email.AccountVerificationEmail;
 import com.nackademin.bookingSystem.service.email.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ import javax.mail.MessagingException;
 public class EmailController {
     @Autowired
     EmailService emailService;
+    @Autowired
+    VerificationTokenService verificationTokenService;
 
     @GetMapping(value = "/test-email/{user-email}")
     public
@@ -41,8 +44,9 @@ public class EmailController {
     ResponseEntity<?> sendHtmlEmail(@RequestBody Customer customer) {
         AccountVerificationEmail email=new AccountVerificationEmail();
         email.init(customer);
-        email.setToken("Test token");
-        email.buildVerificationUrl("http://google.com","Test token");
+        String tokenTest =verificationTokenService.createVerificationToken().toString();
+        email.setToken(tokenTest);
+        email.buildVerificationUrl("http://google.com",tokenTest);
 
 
         try {

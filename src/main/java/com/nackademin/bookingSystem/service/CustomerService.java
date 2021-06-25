@@ -55,7 +55,7 @@ public class CustomerService {
     public Customer addCustomerAsUser(Customer customer){
         return repository.save(insertRole(customer,"ROLE_USER"));
     }
-
+    public Customer updateCustomer(Customer customer){return repository.save(customer);}
 
     public Customer addCustomerAsAdmin(Customer customer){
         return repository.save(insertRole(customer,"ROLE_ADMIN"));

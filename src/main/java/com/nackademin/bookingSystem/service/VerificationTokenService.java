@@ -1,5 +1,6 @@
 package com.nackademin.bookingSystem.service;
 
+import com.nackademin.bookingSystem.model.Customer;
 import com.nackademin.bookingSystem.model.VerificationToken;
 import com.nackademin.bookingSystem.repository.VerificationTokenRepo;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -8,7 +9,7 @@ import org.springframework.security.crypto.keygen.BytesKeyGenerator;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.KeyGenerator;
+
 import java.time.LocalDateTime;
 
 /**
@@ -25,12 +26,37 @@ public class VerificationTokenService{
     @Autowired
     private VerificationTokenRepo verificationTokenRepo;
 
-    public VerificationToken createVerificationToken(){
+    public VerificationToken createVerificationToken(Customer customer){
+
         String token=new String(Base64.encodeBase64( DEFAULT_TOKEN_GENERATOR.generateKey(), true, true ));
         VerificationToken verificationToken=new VerificationToken();
         verificationToken.setToken(token);
         verificationToken.setExpireAt(LocalDateTime.now().plusHours(24));//we give one day
+
+        verificationToken.setCustomer(customer);
         verificationTokenRepo.save(verificationToken);
         return verificationToken;
     }
+
+
+    public void saveSecureToken(VerificationToken token) {
+        verificationTokenRepo.save(token);
+    }
+
+
+    public VerificationToken findByToken(String token) {
+        return verificationTokenRepo.findByToken(token);
+    }
+
+
+    public void removeToken(VerificationToken token) {
+        verificationTokenRepo.delete(token);
+    }
+
+
+    public void removeTokenByToken(String token) {
+        verificationTokenRepo.removeByToken(token);
+    }
+
+
 }

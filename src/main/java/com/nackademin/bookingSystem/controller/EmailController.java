@@ -1,6 +1,7 @@
 package com.nackademin.bookingSystem.controller;
 
 import com.nackademin.bookingSystem.model.Customer;
+import com.nackademin.bookingSystem.model.VerificationToken;
 import com.nackademin.bookingSystem.service.VerificationTokenService;
 import com.nackademin.bookingSystem.service.email.AccountVerificationEmail;
 import com.nackademin.bookingSystem.service.email.EmailService;
@@ -42,11 +43,12 @@ public class EmailController {
     @PostMapping(value = "/test-email/test-html")
     public
     ResponseEntity<?> sendHtmlEmail(@RequestBody Customer customer) {
+
         AccountVerificationEmail email=new AccountVerificationEmail();
         email.init(customer);
-        String tokenTest =verificationTokenService.createVerificationToken().toString();
-        email.setToken(tokenTest);
-        email.buildVerificationUrl("http://google.com",tokenTest);
+        VerificationToken tokenTest =verificationTokenService.createVerificationToken(customer);
+        email.setToken(tokenTest.getToken());
+        email.buildVerificationUrl("http://google.com",tokenTest.getToken());
 
 
         try {

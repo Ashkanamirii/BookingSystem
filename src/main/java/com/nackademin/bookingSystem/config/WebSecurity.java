@@ -55,6 +55,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 //.httpBasic().disable()
                 .authorizeRequests()
                 .antMatchers("/authenticate/**").permitAll()
+                .antMatchers("/authenticate/verify/**").permitAll()
                 .antMatchers("/email/**").permitAll()
                 .anyRequest().authenticated()
                ;

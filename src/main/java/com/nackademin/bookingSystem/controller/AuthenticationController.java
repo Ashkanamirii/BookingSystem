@@ -3,10 +3,12 @@ package com.nackademin.bookingSystem.controller;
 import com.nackademin.bookingSystem.dto.LoginReq;
 import com.nackademin.bookingSystem.dto.SignUpReq;
 import com.nackademin.bookingSystem.model.Customer;
+import com.nackademin.bookingSystem.model.VerificationToken;
 import com.nackademin.bookingSystem.security.JWTtokenProvider;
 import com.nackademin.bookingSystem.dto.JwtAuthResponse;
 import com.nackademin.bookingSystem.service.CustomerService;
 
+import com.nackademin.bookingSystem.service.VerificationTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +17,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 
 /**
  * Created by Hodei Eceiza
@@ -44,6 +44,9 @@ public class AuthenticationController {
 
     @Autowired
     private JWTtokenProvider tokenProvider;
+
+    @Autowired
+    private VerificationTokenService verificationTokenService;
 
 
     @PostMapping("login")
@@ -78,9 +81,31 @@ public class AuthenticationController {
         customer.setEmail(signUpReq.getEmail());
         customer.setSecurityNumber(signUpReq.getSecurityNumber());
         customer.setPassword(passwordEncoder.encode(signUpReq.getPassword()));
+        customer.setAccountVerified(false);
         customerService.addCustomerAsUser(customer);
 
+
         return ResponseEntity.ok().body("USER CREATED with email " + signUpReq.getEmail());
+    }
+
+    @GetMapping("verify/{token}")
+    public ResponseEntity<?> verifyAccount(@PathVariable String token){
+
+        VerificationToken verificationToken=verificationTokenService.findByToken(token);
+
+        if(verificationToken.isExpired() || !verificationToken.getToken().equals(token)){
+            return ResponseEntity.badRequest().body("Secure token not accepted");
+        }
+        else{
+            Customer customer= verificationToken.getCustomer();
+            customer.setAccountVerified(true);
+            customerService.updateCustomer(customer);
+            return ResponseEntity.ok().body("User accepted, go to login");
+        }
+    }
+    @GetMapping("test")
+    public String test(){
+        return "a test";
     }
 
 }

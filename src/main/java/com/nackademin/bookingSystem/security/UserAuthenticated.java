@@ -32,8 +32,9 @@ public class UserAuthenticated implements UserDetails {
     private String password;
     private String username;
     private Collection<? extends GrantedAuthority> authorities;
+    private boolean isVerified;
 
-    public UserAuthenticated(Long id, String firstName, String lastName, Long securityNumber, String email, String password, String username, Collection<? extends GrantedAuthority> authorities) {
+    public UserAuthenticated(Long id, String firstName, String lastName, Long securityNumber, String email, String password, String username, Collection<? extends GrantedAuthority> authorities, boolean isVerified) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -42,6 +43,7 @@ public class UserAuthenticated implements UserDetails {
         this.password = password;
         this.username = username;
         this.authorities = authorities;
+        this.isVerified=isVerified;
     }
 
     public UserAuthenticated(String email, String password, Collection<? extends GrantedAuthority> singletonList) {
@@ -61,7 +63,8 @@ public class UserAuthenticated implements UserDetails {
                     customer.getEmail(),
                     customer.getPassword(),
                     customer.getEmail(),
-                   customerAuthorities(customer));
+                   customerAuthorities(customer),
+                    customer.isAccountVerified());
 
     }
 
@@ -106,7 +109,7 @@ public class UserAuthenticated implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isVerified;
     }
 
     /*public String getName(){

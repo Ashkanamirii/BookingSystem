@@ -36,6 +36,7 @@ public class DbInit {
         Customer admin=new Customer();
         admin.setEmail("superadmin@email.com");
         admin.setPassword(encode.encode("adminPass"));
+        admin.setAccountVerified(true);
         customerRepo.save(admin);
 
         Customer savedAdmin=customerRepo.findByEmail("superadmin@email.com");

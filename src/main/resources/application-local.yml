@@ -43,4 +43,10 @@ app:
   oauth2:
     authorizedRedirectUris:
       - http://localhost:8080/oauth2/redirect
-
+  redirections:
+    baseUri:
+      - http://localhost:3000
+    loginRedirect:
+      - /login
+    verificationRedirect:
+      - /verify/account/

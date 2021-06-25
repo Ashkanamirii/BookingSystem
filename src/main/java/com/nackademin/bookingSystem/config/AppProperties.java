@@ -32,4 +32,11 @@ public class AppProperties {
         private String authorizedRedirectUris;
 
     }
+    @Getter
+    @Setter
+    public static final class Redirections{
+        private String baseUri;
+        private String loginRedirect;
+        private String verificationRedirect;
+    }
 }

@@ -1,5 +1,6 @@
 package com.nackademin.bookingSystem.controller;
 
+import com.nackademin.bookingSystem.config.AppProperties;
 import com.nackademin.bookingSystem.model.Customer;
 import com.nackademin.bookingSystem.model.VerificationToken;
 import com.nackademin.bookingSystem.service.VerificationTokenService;
@@ -20,6 +21,7 @@ import javax.mail.MessagingException;
  * Project: BookingSystem
  * Copyright: MIT
  */
+//this controller is for test until we get more need for email service
 @RestController
 @RequestMapping("/email")
 public class EmailController {
@@ -27,6 +29,9 @@ public class EmailController {
     EmailService emailService;
     @Autowired
     VerificationTokenService verificationTokenService;
+
+    @Autowired
+    private AppProperties appProperties;
 
     @GetMapping(value = "/test-email/{user-email}")
     public
@@ -40,11 +45,12 @@ public class EmailController {
 
         return ResponseEntity.ok("Please check your inbox");
     }
+    //For test, nothing specifically useful...
     @PostMapping(value = "/test-email/test-html")
     public
     ResponseEntity<?> sendHtmlEmail(@RequestBody Customer customer) {
 
-        AccountVerificationEmail email=new AccountVerificationEmail();
+        AccountVerificationEmail email=new AccountVerificationEmail(appProperties);
         email.init(customer);
         VerificationToken tokenTest =verificationTokenService.createVerificationToken(customer);
         email.setToken(tokenTest.getToken());

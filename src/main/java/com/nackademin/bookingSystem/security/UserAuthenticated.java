@@ -71,7 +71,7 @@ public class UserAuthenticated implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        //for now there is no roles fixed.
+
        // return Collections.singletonList(new SimpleGrantedAuthority(("ROLE_USER")));
         return authorities;
     }

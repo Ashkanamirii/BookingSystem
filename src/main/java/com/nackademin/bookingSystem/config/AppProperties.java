@@ -18,6 +18,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class AppProperties {
     private final Auth auth=new Auth();
     private final Oauth2 oauth2=new Oauth2();
+    private final Redirections redirections=new Redirections();
 
     @Getter
     @Setter
@@ -34,7 +35,7 @@ public class AppProperties {
     }
     @Getter
     @Setter
-    public static final class Redirections{
+    public static class Redirections{
         private String baseUri;
         private String loginRedirect;
         private String verificationRedirect;

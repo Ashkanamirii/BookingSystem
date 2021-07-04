@@ -1,11 +1,11 @@
 package com.nackademin.bookingSystem.model;
 
+
 import lombok.Data;
+
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.OptimisticLock;
-import org.hibernate.annotations.OptimisticLockType;
-import org.hibernate.annotations.OptimisticLocking;
-import org.springframework.data.jpa.repository.Lock;
+
+
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
  */
 @Data
 @Entity
-
 public class VerificationToken {
 
     @Id
@@ -31,8 +30,9 @@ public class VerificationToken {
 
     @Transient
     private boolean isExpired;
-    @ManyToOne()
-    @JoinColumn(name = "customer_id", referencedColumnName ="id")
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", referencedColumnName ="id",updatable=false)
     private Customer customer;
 
     public boolean isExpired(){

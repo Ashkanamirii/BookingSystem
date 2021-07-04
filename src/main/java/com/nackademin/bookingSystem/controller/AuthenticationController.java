@@ -13,6 +13,7 @@ import com.nackademin.bookingSystem.service.VerificationTokenService;
 import com.nackademin.bookingSystem.service.email.AccountVerificationEmail;
 import com.nackademin.bookingSystem.service.email.CustomEmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,7 +26,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;
-import java.util.Set;
+import java.util.Objects;
+
 
 
 /**
@@ -102,11 +104,14 @@ public class AuthenticationController {
         }
         return ResponseEntity.ok().body("Verification email sent to "+signUpReq.getEmail());
     }
-    private void sendVerificationEmail( Customer customer) throws MessagingException {
+
+    private void sendVerificationEmail(Customer customer) throws MessagingException {
 
         AccountVerificationEmail email=new AccountVerificationEmail(appProperties);
         email.init(customer);
         VerificationToken tokenTest =verificationTokenService.createVerificationToken(customer);
+
+
         email.setToken(tokenTest.getToken());
         email.buildVerificationUrl(appProperties.getRedirections().getBaseUri(),tokenTest.getToken());
 
@@ -119,18 +124,21 @@ public class AuthenticationController {
 
         VerificationToken verificationToken=verificationTokenService.findByToken(token);
 
-        if(verificationToken.isExpired() || !verificationToken.getToken().equals(token)){
+
+        if(verificationToken.isExpired() || !verificationToken.getToken().equals(token) || Objects.isNull(verificationToken)){
             return ResponseEntity.badRequest().body("Secure token not accepted");
         }
         else{
-            Customer customer= verificationToken.getCustomer();
-            customer.setAccountVerified(true);
+           Customer customer= verificationToken.getCustomer();
+
+           customer.setAccountVerified(true);
+
             customerService.updateCustomer(customer);
 
 
-//staleStateException
-
                 verificationTokenService.removeToken(verificationToken);
+
+
 
             return ResponseEntity.ok().body("User accepted, go to login");
         }

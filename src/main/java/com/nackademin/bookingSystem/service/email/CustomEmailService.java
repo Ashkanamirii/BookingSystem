@@ -47,7 +47,7 @@ public class CustomEmailService implements EmailService{
         messageHelper.setSubject(subject);
         messageHelper.setText(message);
         FileSystemResource file = new FileSystemResource(ResourceUtils.getFile(attachment));
-        messageHelper.addAttachment("Purchase Order", file);
+        messageHelper.addAttachment("File attached", file);
         emailSender.send(emailToSend);
     }
 

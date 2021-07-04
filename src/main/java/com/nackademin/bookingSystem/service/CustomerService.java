@@ -7,10 +7,8 @@ import com.nackademin.bookingSystem.repository.CustomerRepo;
 import com.nackademin.bookingSystem.repository.RolesRepo;
 import com.nackademin.bookingSystem.utils.utils.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.LockModeType;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -58,7 +56,7 @@ public class CustomerService {
         return repository.save(insertRole(customer,"ROLE_USER"));
     }
 
-    public Customer updateCustomer(Customer customer){return repository.save(customer);}
+    public Customer updateCustomer(Customer customer){return repository.saveAndFlush(customer);}
 
     public Customer addCustomerAsAdmin(Customer customer){
         return repository.save(insertRole(customer,"ROLE_ADMIN"));

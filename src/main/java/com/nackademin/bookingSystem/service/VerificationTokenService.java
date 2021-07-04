@@ -4,18 +4,15 @@ import com.nackademin.bookingSystem.model.Customer;
 import com.nackademin.bookingSystem.model.VerificationToken;
 import com.nackademin.bookingSystem.repository.VerificationTokenRepo;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.hibernate.LockMode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Lock;
+
 import org.springframework.security.crypto.keygen.BytesKeyGenerator;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.stereotype.Service;
 
 
-import javax.persistence.LockModeType;
-import javax.persistence.Version;
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+
 
 /**
  * Created by Hodei Eceiza
@@ -24,6 +21,7 @@ import java.time.LocalDateTime;
  * Project: BookingSystem
  * Copyright: MIT
  */
+
 @Service
 public class VerificationTokenService{
     private static final BytesKeyGenerator DEFAULT_TOKEN_GENERATOR = KeyGenerators.secureRandom(30);
@@ -55,7 +53,10 @@ public class VerificationTokenService{
 
 
     public void removeToken(VerificationToken token) {
+
         verificationTokenRepo.delete(token);
+
+
     }
     public boolean tokenExists(VerificationToken token){
         return verificationTokenRepo.existsById(token.getId());

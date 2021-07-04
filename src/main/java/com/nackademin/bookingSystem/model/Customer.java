@@ -3,14 +3,13 @@ package com.nackademin.bookingSystem.model;
 
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
 
 
 import java.time.LocalDateTime;
@@ -54,12 +53,12 @@ public class Customer {
     @OneToMany(targetEntity = Booking.class)
     private List<Booking> bookingList;
 
-    @ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    @ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     @JoinTable(name="customer_roles",joinColumns =@JoinColumn(name="customer_id"),inverseJoinColumns = @JoinColumn(name="roles_id"))
     private Set<RolesCustomer> roles=new HashSet<>();
 
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer",fetch = FetchType.LAZY)
     private Set<VerificationToken> tokens;
 
     @CreationTimestamp

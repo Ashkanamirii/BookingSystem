@@ -1,13 +1,19 @@
 package com.nackademin.bookingSystem.controller;
 
+import com.nackademin.bookingSystem.config.AppProperties;
 import com.nackademin.bookingSystem.dto.LoginReq;
 import com.nackademin.bookingSystem.dto.SignUpReq;
 import com.nackademin.bookingSystem.model.Customer;
+import com.nackademin.bookingSystem.model.VerificationToken;
 import com.nackademin.bookingSystem.security.JWTtokenProvider;
 import com.nackademin.bookingSystem.dto.JwtAuthResponse;
 import com.nackademin.bookingSystem.service.CustomerService;
 
+import com.nackademin.bookingSystem.service.VerificationTokenService;
+import com.nackademin.bookingSystem.service.email.AccountVerificationEmail;
+import com.nackademin.bookingSystem.service.email.CustomEmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,13 +21,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
+import java.util.Objects;
+
+
 
 /**
  * Created by Hodei Eceiza
@@ -45,6 +52,14 @@ public class AuthenticationController {
     @Autowired
     private JWTtokenProvider tokenProvider;
 
+    @Autowired
+    private VerificationTokenService verificationTokenService;
+
+    @Autowired
+    private CustomEmailService emailService;
+
+    @Autowired
+    private AppProperties appProperties;
 
     @PostMapping("login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginReq loginReq) {
@@ -59,6 +74,7 @@ public class AuthenticationController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         //create token
         String token = tokenProvider.createToken(authentication);
+
         //set ok response
         return ResponseEntity.ok(new JwtAuthResponse(token));
 
@@ -78,9 +94,54 @@ public class AuthenticationController {
         customer.setEmail(signUpReq.getEmail());
         customer.setSecurityNumber(signUpReq.getSecurityNumber());
         customer.setPassword(passwordEncoder.encode(signUpReq.getPassword()));
+        customer.setAccountVerified(false);
         customerService.addCustomerAsUser(customer);
 
-        return ResponseEntity.ok().body("USER CREATED with email " + signUpReq.getEmail());
+        try {
+            sendVerificationEmail(customer);
+        } catch (MessagingException e) {
+            ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Couldn't send verification email");
+        }
+        return ResponseEntity.ok().body("Verification email sent to "+signUpReq.getEmail());
+    }
+
+    private void sendVerificationEmail(Customer customer) throws MessagingException {
+
+        AccountVerificationEmail email=new AccountVerificationEmail(appProperties);
+        email.init(customer);
+        VerificationToken tokenTest =verificationTokenService.createVerificationToken(customer);
+
+
+        email.setToken(tokenTest.getToken());
+        email.buildVerificationUrl(appProperties.getRedirections().getBaseUri(),tokenTest.getToken());
+
+        emailService.sendHtmlFormattedEmail(email);
+
+
+    }
+    @GetMapping("verify/{token}")
+    public ResponseEntity<?> verifyAccount(@PathVariable String token){
+
+        VerificationToken verificationToken=verificationTokenService.findByToken(token);
+
+
+        if(verificationToken.isExpired() || !verificationToken.getToken().equals(token) || Objects.isNull(verificationToken)){
+            return ResponseEntity.badRequest().body("Secure token not accepted");
+        }
+        else{
+           Customer customer= verificationToken.getCustomer();
+
+           customer.setAccountVerified(true);
+
+            customerService.updateCustomer(customer);
+
+
+                verificationTokenService.removeToken(verificationToken);
+
+
+
+            return ResponseEntity.ok().body("User accepted, go to login");
+        }
     }
 
 }

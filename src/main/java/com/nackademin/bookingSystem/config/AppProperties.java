@@ -18,6 +18,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class AppProperties {
     private final Auth auth=new Auth();
     private final Oauth2 oauth2=new Oauth2();
+    private final Redirections redirections=new Redirections();
 
     @Getter
     @Setter
@@ -31,5 +32,12 @@ public class AppProperties {
         //we redirect only to one place, but we can check other places maybe??
         private String authorizedRedirectUris;
 
+    }
+    @Getter
+    @Setter
+    public static class Redirections{
+        private String baseUri;
+        private String loginRedirect;
+        private String verificationRedirect;
     }
 }

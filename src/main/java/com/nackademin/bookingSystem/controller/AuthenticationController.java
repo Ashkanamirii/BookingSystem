@@ -2,6 +2,7 @@ package com.nackademin.bookingSystem.controller;
 
 import com.nackademin.bookingSystem.config.AppProperties;
 import com.nackademin.bookingSystem.dto.LoginReq;
+import com.nackademin.bookingSystem.dto.ResetPassReq;
 import com.nackademin.bookingSystem.dto.SignUpReq;
 import com.nackademin.bookingSystem.model.Customer;
 import com.nackademin.bookingSystem.model.VerificationToken;
@@ -12,6 +13,7 @@ import com.nackademin.bookingSystem.service.CustomerService;
 import com.nackademin.bookingSystem.service.VerificationTokenService;
 import com.nackademin.bookingSystem.service.email.AccountVerificationEmail;
 import com.nackademin.bookingSystem.service.email.CustomEmailService;
+import com.nackademin.bookingSystem.service.email.ResetPassEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
@@ -27,8 +29,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.util.Objects;
-
-
 
 /**
  * Created by Hodei Eceiza
@@ -102,46 +102,77 @@ public class AuthenticationController {
         } catch (MessagingException e) {
             ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Couldn't send verification email");
         }
-        return ResponseEntity.ok().body("Verification email sent to "+signUpReq.getEmail());
+        return ResponseEntity.ok().body("Verification email sent to " + signUpReq.getEmail());
     }
 
     private void sendVerificationEmail(Customer customer) throws MessagingException {
 
-        AccountVerificationEmail email=new AccountVerificationEmail(appProperties);
+        AccountVerificationEmail email = new AccountVerificationEmail(appProperties);
         email.init(customer);
-        VerificationToken tokenTest =verificationTokenService.createVerificationToken(customer);
+        VerificationToken verificationToken = verificationTokenService.createVerificationToken(customer);
 
-
-        email.setToken(tokenTest.getToken());
-        email.buildVerificationUrl(appProperties.getRedirections().getBaseUri(),tokenTest.getToken());
+        email.setToken(verificationToken.getToken());
+        email.buildVerificationUrl(appProperties.getRedirections().getBaseUri(), verificationToken.getToken());
 
         emailService.sendHtmlFormattedEmail(email);
-
-
     }
+
     @GetMapping("verify/{token}")
-    public ResponseEntity<?> verifyAccount(@PathVariable String token){
+    public ResponseEntity<?> verifyAccount(@PathVariable String token) {
 
-        VerificationToken verificationToken=verificationTokenService.findByToken(token);
+        VerificationToken verificationToken = verificationTokenService.findByToken(token);
 
-
-        if(verificationToken.isExpired() || !verificationToken.getToken().equals(token) || Objects.isNull(verificationToken)){
+        if (verificationToken.isExpired() || !verificationToken.getToken().equals(token)) {
             return ResponseEntity.badRequest().body("Secure token not accepted");
-        }
-        else{
-           Customer customer= verificationToken.getCustomer();
-
-           customer.setAccountVerified(true);
-
+        } else {
+            Customer customer = verificationToken.getCustomer();
+            customer.setAccountVerified(true);
             customerService.updateCustomer(customer);
-
-
-                verificationTokenService.removeToken(verificationToken);
-
-
-
+            verificationTokenService.removeToken(verificationToken);
             return ResponseEntity.ok().body("User accepted, go to login");
         }
     }
 
+    @PostMapping("/resetpass/{email}")
+    public ResponseEntity<?> sendResetPassEmail(@PathVariable String email) {
+        Customer customer = customerService.getCustomerByEmail(email);
+        try {
+            sendResetPassEmail(customer);
+        } catch (MessagingException e) {
+            return ResponseEntity.badRequest().body("couldn't send email");
+        }
+        return ResponseEntity.ok().body("Reset password mail sent");
+    }
+
+    private void sendResetPassEmail(Customer customer) throws MessagingException {
+
+        ResetPassEmail email = new ResetPassEmail(appProperties);
+        email.init(customer);
+
+        VerificationToken verificationToken = verificationTokenService.createVerificationToken(customer);
+
+        email.setToken(verificationToken.getToken());
+
+        email.buildVerificationUrl(appProperties.getRedirections().getBaseUri(), verificationToken.getToken(), customer.getEmail());
+
+        emailService.sendHtmlFormattedEmail(email);
+    }
+
+    @GetMapping("/renewpass")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPassReq resetPass) {
+        //TODO: fix null pointer
+        VerificationToken verificationToken = verificationTokenService.findByToken(resetPass.getToken());
+
+        if (verificationToken.isExpired() || !verificationToken.getToken().equals(resetPass.getToken())) {
+            return ResponseEntity.badRequest().body("couldn't renew your password");
+        } else {
+            Customer customer = verificationToken.getCustomer();
+            String encodedPass = passwordEncoder.encode(resetPass.getNewPassword());
+            customer.setPassword(encodedPass);
+            customerService.updateCustomer(customer);
+            verificationTokenService.removeToken(verificationToken);
+            return ResponseEntity.ok().body("User accepted, go to login");
+        }
+
+    }
 }

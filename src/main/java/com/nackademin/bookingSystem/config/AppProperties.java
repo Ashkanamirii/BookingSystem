@@ -39,5 +39,6 @@ public class AppProperties {
         private String baseUri;
         private String loginRedirect;
         private String verificationRedirect;
+        private String resetPassRedirect;
     }
 }

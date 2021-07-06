@@ -53,7 +53,7 @@ public class Customer {
     @OneToMany(targetEntity = Booking.class)
     private List<Booking> bookingList;
 
-    @ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    @ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
     @JoinTable(name="customer_roles",joinColumns =@JoinColumn(name="customer_id"),inverseJoinColumns = @JoinColumn(name="roles_id"))
     private Set<RolesCustomer> roles=new HashSet<>();
 

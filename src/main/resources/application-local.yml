@@ -47,3 +47,4 @@ app:
     baseUri: http://localhost:3000
     loginRedirect: /login
     verificationRedirect: /verify/account/
+    resetPassRedirect: /reset/pass/

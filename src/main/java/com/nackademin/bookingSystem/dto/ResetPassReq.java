@@ -1,6 +1,5 @@
 package com.nackademin.bookingSystem.dto;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -25,6 +24,5 @@ public class ResetPassReq {
 
     @NotBlank
     private String newPassword;
-    @NotBlank
-    private String token;
+
 }

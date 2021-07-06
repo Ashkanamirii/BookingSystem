@@ -1,6 +1,8 @@
 package com.nackademin.bookingSystem.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,31 +33,37 @@ public class JWTtokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
+        try {
+            //get jwt
+            String jwt = getJwt(httpServletRequest);
+            //get String
 
-        //get jwt
-        String jwt=getJwt(httpServletRequest);
-        //get String
-
-        //if jwt not empty and passes validation
-            if(StringUtils.hasText(jwt)&& tokenProvider.validateToken(jwt)){
+            //if jwt not empty and passes validation
+            if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
                 //get the email (we could get the social security number or the id)
-                String userEmail=tokenProvider.getUserEmailFromJWT(jwt);
-                UserDetails userDetails= customUserDetailsService.loadUserByUsername(userEmail);
-                UsernamePasswordAuthenticationToken authentication=new UsernamePasswordAuthenticationToken(userDetails,SecurityContextHolder.getContext().getAuthentication(), userDetails.getAuthorities());
+                String userEmail = tokenProvider.getUserEmailFromJWT(jwt);
+                UserDetails userDetails = customUserDetailsService.loadUserByUsername(userEmail);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, SecurityContextHolder.getContext().getAuthentication(), userDetails.getAuthorities());
 
 
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-
-            filterChain.doFilter(httpServletRequest,httpServletResponse);
+        } catch (ExpiredJwtException e) {
+            httpServletRequest.setAttribute("exception", e);
+            throw e;
+        } catch (BadCredentialsException e) {
+            httpServletRequest.setAttribute("exception", e);
+            throw e;
+        }
+        filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 
     //we read the authorization header and save it in a string
-    private String getJwt(HttpServletRequest request){
-        String bearer=request.getHeader("Authorization");
-        if(StringUtils.hasText(bearer)&& bearer.startsWith("Bearer ")){
+    private String getJwt(HttpServletRequest request) {
+        String bearer = request.getHeader("Authorization");
+        if (StringUtils.hasText(bearer) && bearer.startsWith("Bearer ")) {
             return bearer.substring(7);
         }
         return null;

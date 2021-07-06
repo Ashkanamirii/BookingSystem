@@ -72,6 +72,7 @@ public class CustomerController {
         }
         return ResponseEntity.ok(c);
     }
+   // @PreAuthorize("hasRole('ROLE_ADMIN')"+ " && hasRole('ROLE_USER')")
 
     @GetMapping("/mydetails")
     public Customer getMyDetails(Authentication authentication){

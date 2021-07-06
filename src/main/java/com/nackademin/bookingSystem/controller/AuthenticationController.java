@@ -162,7 +162,8 @@ public class AuthenticationController {
     public ResponseEntity<?> resetPassword(@RequestBody ResetPassReq resetPass) {
         //TODO: fix null pointer
         VerificationToken verificationToken = verificationTokenService.findByToken(resetPass.getToken());
-
+    //   VerificationToken verificationToken = verificationTokenService.findById(2L);
+      //  System.out.println(verificationToken.toString());
         if (verificationToken.isExpired() || !verificationToken.getToken().equals(resetPass.getToken())) {
             return ResponseEntity.badRequest().body("couldn't renew your password");
         } else {

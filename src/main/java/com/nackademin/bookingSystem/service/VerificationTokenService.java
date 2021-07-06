@@ -56,7 +56,6 @@ public class VerificationTokenService{
 
         verificationTokenRepo.delete(token);
 
-
     }
     public boolean tokenExists(VerificationToken token){
         return verificationTokenRepo.existsById(token.getId());
@@ -65,6 +64,8 @@ public class VerificationTokenService{
     public void removeTokenByToken(String token) {
         verificationTokenRepo.removeByToken(token);
     }
-
+    public VerificationToken findById(Long id){
+       return verificationTokenRepo.findById(id).get();
+    }
 
 }

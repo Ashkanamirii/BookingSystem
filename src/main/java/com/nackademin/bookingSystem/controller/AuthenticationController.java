@@ -14,6 +14,7 @@ import com.nackademin.bookingSystem.service.VerificationTokenService;
 import com.nackademin.bookingSystem.service.email.AccountVerificationEmail;
 import com.nackademin.bookingSystem.service.email.CustomEmailService;
 import com.nackademin.bookingSystem.service.email.ResetPassEmail;
+import io.jsonwebtoken.impl.DefaultClaims;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,10 @@ import org.springframework.web.bind.annotation.*;
 
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -174,5 +178,19 @@ public class AuthenticationController {
             return ResponseEntity.ok().body("Password renewed");
         }
 
+    }
+    @GetMapping("/refreshtoken")
+    public ResponseEntity<?> refreshToken(HttpServletRequest request){
+        DefaultClaims claims= (DefaultClaims) request.getAttribute("claims");
+        Map<String,Object> expected=getMapFromJWT(claims);
+        String token= tokenProvider.createRefreshToken(expected,expected.get("sub").toString());
+        return ResponseEntity.ok().body(token);
+    }
+    public Map<String,Object> getMapFromJWT(DefaultClaims claims){
+        Map<String,Object> expected=new HashMap<>();
+        for(Map.Entry<String,Object> entry : claims.entrySet()){
+            expected.put(entry.getKey(),entry.getValue());
+        }
+        return expected;
     }
 }

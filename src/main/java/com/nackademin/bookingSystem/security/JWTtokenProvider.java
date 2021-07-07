@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by Hodei Eceiza
@@ -47,17 +48,17 @@ public class JWTtokenProvider {
                         .getTokenSecret()).compact();
     }
     //Refresh token is the same as JWT token but has a longer expiration date.
-    public String createRefreshToken(Authentication authentication){
-        UserAuthenticated userPrincipal= (UserAuthenticated) authentication.getPrincipal();
+    public String createRefreshToken(Map<String,Object> claims,String subject){
+       // UserAuthenticated userPrincipal= (UserAuthenticated) authentication.getPrincipal();
 
         //set expire time
         Date now=new Date();
         Date expireDate=new Date(now.getTime() + appProperties.getAuth().getRefreshTokenExpirationMsec());
 
         //build the JWT
-        return Jwts.builder()
-                .setSubject(userPrincipal.getUsername())
-                .claim("authority",userPrincipal.getAuthorities())
+        return Jwts.builder().setClaims(claims)
+                .setSubject(subject)
+         //       .claim("authority",userPrincipal.getAuthorities())
                 .setIssuedAt(new Date()).setExpiration(expireDate)
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth()
                         .getTokenSecret()).compact();

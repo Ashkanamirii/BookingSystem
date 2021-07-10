@@ -54,23 +54,25 @@ public class JWTtokenFilter extends OncePerRequestFilter {
             //We check if its a refreshtoken request, and we allow it if its true
             String isRefreshToken = httpServletRequest.getHeader("isRefreshToken");
             String requestURL = httpServletRequest.getRequestURL().toString();
-            if(isRefreshToken!=null && isRefreshToken.equals("true") && requestURL.contains("refreshtoken"))
-                allowRefreshToken(e,httpServletRequest);
+            if (isRefreshToken != null && isRefreshToken.equals("true") && requestURL.contains("refreshtoken"))
+                allowRefreshToken(e, httpServletRequest);
             else
-            httpServletRequest.setAttribute("exception", e);
+                httpServletRequest.setAttribute("exception", e);
         } catch (BadCredentialsException e) {
             httpServletRequest.setAttribute("exception", e);
             throw e;
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
-private void allowRefreshToken(ExpiredJwtException e, HttpServletRequest httpServletRequest){
+
+    private void allowRefreshToken(ExpiredJwtException e, HttpServletRequest httpServletRequest) {
         //we create an "empty" authentication and pass it to securityContext.
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken=new UsernamePasswordAuthenticationToken(null,null,null);
-    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-    //we set the user data in the request, later we will get it in the controller
-    httpServletRequest.setAttribute("claims",e.getClaims());
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(null, null, null);
+        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+        //we set the user data in the request, later we will get it in the controller
+        httpServletRequest.setAttribute("claims", e.getClaims());
     }
+
     //we read the authorization header and save it in a string
     private String getJwt(HttpServletRequest request) {
         String bearer = request.getHeader("Authorization");

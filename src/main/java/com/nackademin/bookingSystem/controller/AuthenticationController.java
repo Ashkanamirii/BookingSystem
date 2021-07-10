@@ -168,7 +168,7 @@ public class AuthenticationController {
         VerificationToken verificationToken = verificationTokenService.findByToken(resetToken);
 
         if (verificationToken.isExpired() || !verificationToken.getToken().equals(resetToken)) {
-           return ResponseEntity.badRequest().body("couldn't renew your password");
+            return ResponseEntity.badRequest().body("couldn't renew your password");
         } else {
             Customer customer = verificationToken.getCustomer();
             String encodedPass = passwordEncoder.encode(resetPass.getNewPassword());
@@ -179,17 +179,19 @@ public class AuthenticationController {
         }
 
     }
+
     @GetMapping("/refreshtoken")
-    public ResponseEntity<?> refreshToken(HttpServletRequest request){
-        DefaultClaims claims= (DefaultClaims) request.getAttribute("claims");
-        Map<String,Object> expected=getMapFromJWT(claims);
-        String token= tokenProvider.createRefreshToken(expected,expected.get("sub").toString());
+    public ResponseEntity<?> refreshToken(HttpServletRequest request) {
+        DefaultClaims claims = (DefaultClaims) request.getAttribute("claims");
+        Map<String, Object> expected = getMapFromJWT(claims);
+        String token = tokenProvider.createRefreshToken(expected, expected.get("sub").toString());
         return ResponseEntity.ok().body(token);
     }
-    public Map<String,Object> getMapFromJWT(DefaultClaims claims){
-        Map<String,Object> expected=new HashMap<>();
-        for(Map.Entry<String,Object> entry : claims.entrySet()){
-            expected.put(entry.getKey(),entry.getValue());
+
+    public Map<String, Object> getMapFromJWT(DefaultClaims claims) {
+        Map<String, Object> expected = new HashMap<>();
+        for (Map.Entry<String, Object> entry : claims.entrySet()) {
+            expected.put(entry.getKey(), entry.getValue());
         }
         return expected;
     }

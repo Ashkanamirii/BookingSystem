@@ -18,6 +18,7 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @ToString
 public class ResetPassReq {
+
     @NotBlank
     @Email
     private String email;

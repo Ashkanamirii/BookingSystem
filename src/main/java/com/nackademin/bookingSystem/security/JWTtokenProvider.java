@@ -6,13 +6,12 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by Hodei Eceiza
@@ -48,6 +47,22 @@ public class JWTtokenProvider {
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth()
                         .getTokenSecret()).compact();
     }
+    //Refresh token is the same as JWT token but has a longer expiration date.
+    public String createRefreshToken(Map<String,Object> claims,String subject){
+       // UserAuthenticated userPrincipal= (UserAuthenticated) authentication.getPrincipal();
+
+        //set expire time
+        Date now=new Date();
+        Date expireDate=new Date(now.getTime() + appProperties.getAuth().getRefreshTokenExpirationMsec());
+
+        //build the JWT
+        return Jwts.builder().setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(new Date()).setExpiration(expireDate)
+                .signWith(SignatureAlgorithm.HS512, appProperties.getAuth()
+                        .getTokenSecret()).compact();
+    }
+
     public String getUserEmailFromJWT(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(appProperties.getAuth().getTokenSecret())

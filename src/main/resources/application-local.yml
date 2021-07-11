@@ -40,6 +40,7 @@ app:
   auth:
     tokenSecret: Yp3s6v9y$B&E)H@McQfThWmZq4t7w!z%C*F-JaNdRgUkXn2r5u8x/A?D(G+KbPeS #used https://www.allkeysgenerator.com/ to create the secret key ("512-bit" long)
     tokenExpirationMsec: 900000 #15 mins
+    refreshTokenExpirationMsec: 10700000 #3 hours (2.97 exactly)
   oauth2:
     authorizedRedirectUris:
       - http://localhost:8080/oauth2/redirect

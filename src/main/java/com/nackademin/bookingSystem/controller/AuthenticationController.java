@@ -162,7 +162,8 @@ public class AuthenticationController {
         emailService.sendHtmlFormattedEmail(email);
     }
 
-    @GetMapping("/renewpass/{resetToken}")
+
+    @PostMapping("/renewpass/{resetToken}")
     public ResponseEntity<?> resetPassword(@PathVariable String resetToken, @RequestBody ResetPassReq resetPass) {
 
         VerificationToken verificationToken = verificationTokenService.findByToken(resetToken);

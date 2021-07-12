@@ -33,7 +33,7 @@ public class VerificationTokenService{
 
         String token=new String(Base64.encodeBase64( DEFAULT_TOKEN_GENERATOR.generateKey(), true, true ));
         VerificationToken verificationToken=new VerificationToken();
-        verificationToken.setToken(token);
+        verificationToken.setToken(token.trim());
         verificationToken.setExpireAt(LocalDateTime.now().plusHours(24));//we give one day
 
         verificationToken.setCustomer(customer);

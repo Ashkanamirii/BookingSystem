@@ -1,8 +1,6 @@
 package com.nackademin.bookingSystem.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -14,11 +12,11 @@ import javax.validation.constraints.NotBlank;
  * Project: BookingSystem
  * Copyright: MIT
  */
-@Getter
-@Setter
-@ToString
-public class ResetPassReq {
 
+@Data
+@AllArgsConstructor
+public class ResetPassReq {
+    private String resetToken;
     @NotBlank
     @Email
     private String email;

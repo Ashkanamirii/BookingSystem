@@ -163,12 +163,12 @@ public class AuthenticationController {
     }
 
 
-    @PostMapping("/renewpass/{resetToken}")
-    public ResponseEntity<?> resetPassword(@PathVariable String resetToken, @RequestBody ResetPassReq resetPass) {
+    @PostMapping("/renewpass")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPassReq resetPass) {
 
-        VerificationToken verificationToken = verificationTokenService.findByToken(resetToken);
+        VerificationToken verificationToken = verificationTokenService.findByToken(resetPass.getResetToken());
 
-        if (verificationToken.isExpired() || !verificationToken.getToken().equals(resetToken)) {
+        if (verificationToken.isExpired() || !verificationToken.getToken().equals(resetPass.getResetToken())) {
             return ResponseEntity.badRequest().body("couldn't renew your password");
         } else {
             Customer customer = verificationToken.getCustomer();

@@ -1,4 +1,4 @@
-package com.nackademin.bookningsystem;
+package com.nackademin.bookingsystem;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

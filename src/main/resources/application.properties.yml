@@ -1,4 +1,19 @@
 spring:
+  dataSource:
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL}
+  jpa:
+    database-platform: ${SPRING_JPA_DATABASE-PLATFORM}
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL-AUTO}
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+      hibernate.jdbc.lob.non_contextual_creation: true
+
+
 app:
   auth:
     tokenSecret: Yp3s6v9y$B&E)H@McQfThWmZq4t7w!z%C*F-JaNdRgUkXn2r5u8x/A?D(G+KbPeS #used https://www.allkeysgenerator.com/ to create the secret key ("512-bit" long)

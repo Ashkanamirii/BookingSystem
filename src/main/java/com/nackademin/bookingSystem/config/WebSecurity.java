@@ -86,26 +86,4 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         return new JWTtokenFilter();
     }
 
-    @Value("${spring.mail.host}")
-    private static final String MAIL_HOST = null;
-    @Value("${spring.mail.username}")
-    private static final String MAIL_USERNAME = null;
-    @Value("${spring.mail.password}")
-    private static final String MAIL_PASS = null;
-    @Bean
-    public JavaMailSender getJavaMailSender() {
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost(MAIL_HOST);
-        mailSender.setPort(587);
-
-        mailSender.setUsername(MAIL_USERNAME);
-        mailSender.setPassword(MAIL_PASS);
-
-        Properties props = mailSender.getJavaMailProperties();
-        props.put("mail.transport.protocol", "smtp");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-
-        return mailSender;
-    }
 }

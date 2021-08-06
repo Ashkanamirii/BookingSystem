@@ -25,15 +25,11 @@ import java.nio.charset.StandardCharsets;
 @Service
 public class CustomEmailService implements EmailService{
 
-    public final JavaMailSender emailSender;
+    @Autowired
+    public JavaMailSender emailSender;
 
-    public final SpringTemplateEngine springTemplate;
-
-    public CustomEmailService(JavaMailSender emailSender, SpringTemplateEngine springTemplate) {
-        this.emailSender = emailSender;
-        this.springTemplate = springTemplate;
-    }
-
+    @Autowired
+    public SpringTemplateEngine springTemplate;
     @Override
     public void sendSimpleEmail(String toAddress, String subject, String message) {
         SimpleMailMessage simpleMessage= new SimpleMailMessage();

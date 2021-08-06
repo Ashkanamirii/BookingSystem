@@ -4,9 +4,12 @@ import com.nackademin.bookingSystem.security.CustomOauth2UserService;
 import com.nackademin.bookingSystem.security.CustomUserDetailsService;
 import com.nackademin.bookingSystem.security.JWTtokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -18,6 +21,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.Properties;
 
 /**
  * Created by Hodei Eceiza
@@ -81,4 +86,26 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         return new JWTtokenFilter();
     }
 
+    @Value("${spring.mail.host}")
+    private static final String MAIL_HOST = null;
+    @Value("${spring.mail.username}")
+    private static final String MAIL_USERNAME = null;
+    @Value("${spring.mail.password}")
+    private static final String MAIL_PASS = null;
+    @Bean
+    public JavaMailSender getJavaMailSender() {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost(MAIL_HOST);
+        mailSender.setPort(587);
+
+        mailSender.setUsername(MAIL_USERNAME);
+        mailSender.setPassword(MAIL_PASS);
+
+        Properties props = mailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+
+        return mailSender;
+    }
 }

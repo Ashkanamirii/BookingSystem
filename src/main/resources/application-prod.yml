@@ -4,6 +4,7 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD}
     url: ${SPRING_DATASOURCE_URL}
   jpa:
+    database-platform: ${SPRING_JPA_DATABASE-PLATFORM}
     hibernate:
       ddl-auto: ${SPRING_JPA_HIBERNATE_DDL-AUTO}
     show-sql: true

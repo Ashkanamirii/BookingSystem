@@ -4,12 +4,11 @@ import com.nackademin.bookingSystem.security.CustomOauth2UserService;
 import com.nackademin.bookingSystem.security.CustomUserDetailsService;
 import com.nackademin.bookingSystem.security.JWTtokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -86,8 +85,5 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         return new JWTtokenFilter();
     }
 
-    @Bean
-    public JavaMailSender javaMailSender() {
-        return new JavaMailSenderImpl();
-    }
+
 }

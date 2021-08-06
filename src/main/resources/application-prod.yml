@@ -12,6 +12,11 @@ spring:
       hibernate.format_sql: true
       hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
       hibernate.jdbc.lob.non_contextual_creation: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${GMAIL_EMAIL}
+    password: ${GMAIL_PASS}
 
 
 app:

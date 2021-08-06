@@ -17,6 +17,11 @@ spring:
     port: 587
     username: ${GMAIL_EMAIL}
     password: ${GMAIL_PASS}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls.enable: true
 
 
 app:

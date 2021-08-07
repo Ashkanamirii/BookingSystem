@@ -5,6 +5,7 @@ import com.nackademin.bookingSystem.model.RolesCustomer;
 import com.nackademin.bookingSystem.repository.CustomerRepo;
 import com.nackademin.bookingSystem.repository.RolesRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -27,25 +28,28 @@ public class DbInit {
     @Autowired
     private RolesRepo rolesRepo;
 
-
+    @Autowired
+    private AppProperties environment;
     @PostConstruct
     private void postConstruct(){
 
-//create an initial admin
-        BCryptPasswordEncoder encode = new BCryptPasswordEncoder();
-        Customer admin=new Customer();
-        admin.setEmail("superadmin@email.com");
-        admin.setPassword(encode.encode("adminPass"));
-        admin.setAccountVerified(true);
-        customerRepo.save(admin);
 
-        Customer savedAdmin=customerRepo.findByEmail("superadmin@email.com");
-        RolesCustomer roleType=rolesRepo.findByRoleType("ROLE_ADMIN");
-        Set<RolesCustomer> customersRoles=admin.getRoles();
-        customersRoles.add(roleType);
-        savedAdmin.setRoles(customersRoles);
+        if(!customerRepo.existsByEmail(environment.getDbinserts().getMasterAdminEmail())) {
+            BCryptPasswordEncoder encode = new BCryptPasswordEncoder();
+            Customer admin = new Customer();
+            admin.setEmail(environment.getDbinserts().getMasterAdminEmail());
+            admin.setPassword(encode.encode(environment.getDbinserts().getMasterAdminPass()));
+            admin.setAccountVerified(true);
+            customerRepo.save(admin);
 
-        customerRepo.save(savedAdmin);
+            Customer savedAdmin = customerRepo.findByEmail(environment.getDbinserts().getMasterAdminEmail());
+            RolesCustomer roleType = rolesRepo.findByRoleType("ROLE_ADMIN");
+            Set<RolesCustomer> customersRoles = admin.getRoles();
+            customersRoles.add(roleType);
+            savedAdmin.setRoles(customersRoles);
+
+            customerRepo.save(savedAdmin);
+        }
 
     }
 }

@@ -19,6 +19,7 @@ public class AppProperties {
     private final Auth auth=new Auth();
     private final Oauth2 oauth2=new Oauth2();
     private final Redirections redirections=new Redirections();
+    private final DbInserts dbinserts=new DbInserts();
 
     @Getter
     @Setter
@@ -41,5 +42,11 @@ public class AppProperties {
         private String loginRedirect;
         private String verificationRedirect;
         private String resetPassRedirect;
+    }
+    @Getter
+    @Setter
+    public static class DbInserts{
+        private String masterAdminEmail;
+        private String masterAdminPass;
     }
 }

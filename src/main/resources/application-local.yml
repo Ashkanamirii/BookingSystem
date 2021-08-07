@@ -49,3 +49,6 @@ app:
     loginRedirect: /login
     verificationRedirect: /verify/account/
     resetPassRedirect: /reset/pass/
+  dbinserts:
+    masterAdminEmail: ${MASTER_ADMIN_EMAIL}
+    masterAdminPass: ${MASTER_ADMIN_PASS}

@@ -2,13 +2,16 @@ package com.nackademin.bookingSystem.service;
 
 
 import com.nackademin.bookingSystem.model.Customer;
+import com.nackademin.bookingSystem.model.RolesCustomer;
 import com.nackademin.bookingSystem.repository.CustomerRepo;
+import com.nackademin.bookingSystem.repository.RolesRepo;
 import com.nackademin.bookingSystem.utils.utils.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Created by Ashkan Amiri
@@ -22,6 +25,9 @@ public class CustomerService {
 
     @Autowired
     CustomerRepo repository;
+
+    @Autowired
+    RolesRepo rolesRepository;
 
     public List<Customer> getAllCustomers() {
         return repository.findAll();
@@ -38,5 +44,30 @@ public class CustomerService {
         } else {
             return repository.save(customer);
         }
+    }
+    public boolean emailExists(String email){
+        return repository.existsByEmail(email);
+    }
+
+    public Customer getCustomerByEmail(String email){
+        return repository.findByEmail(email);
+    }
+    public Customer addCustomerAsUser(Customer customer){
+        return repository.save(insertRole(customer,"ROLE_USER"));
+    }
+
+    public Customer updateCustomer(Customer customer){return repository.saveAndFlush(customer);}
+
+    public Customer addCustomerAsAdmin(Customer customer){
+        return repository.save(insertRole(customer,"ROLE_ADMIN"));
+    }
+
+
+    private Customer insertRole(Customer customer, String role){
+        RolesCustomer roleType=rolesRepository.findByRoleType(role);
+        Set<RolesCustomer> customersRoles=customer.getRoles();
+        customersRoles.add(roleType);
+        customer.setRoles(customersRoles);
+        return customer;
     }
 }

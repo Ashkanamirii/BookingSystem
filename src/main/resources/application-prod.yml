@@ -1,13 +1,12 @@
-#local set up to connect with a docker postgres (now using some environment variables)
 spring:
   datasource:
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
-    url: jdbc:postgresql://localhost:5432/${POSTGRES_DB}
-
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL}
   jpa:
+    database-platform: ${SPRING_JPA_DATABASE-PLATFORM}
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL-AUTO}
     show-sql: true
     properties:
       hibernate.format_sql: true
@@ -19,22 +18,11 @@ spring:
     username: ${GMAIL_EMAIL}
     password: ${GMAIL_PASS}
     properties:
-        mail:
-          smtp:
-            auth: true
-            starttls.enable: true
-#uncomment to run security
-#  security:
- #   oauth2:
-  #    client:
-   #     registration:
-    #      google:
-     #       client-id: 880170717560-9nsfn8n4bpqpbmokej8dqis287p8meam.apps.googleusercontent.com
-      #      client-secret: WE_KEEP_THIS_SECRET_MAYBE_WE_CAN_SAVE_SOMEWHERE_SECRET_PROPERTIES????
-       #     redirect-uri: "{baseUrl}/oauth2/callback/{registrationId}"
-        #    scope:
-         #     - email
-          #    - profile
+      mail:
+        smtp:
+          auth: true
+          starttls.enable: true
+          starttls.required: true
 
 app:
   auth:
@@ -49,3 +37,7 @@ app:
     loginRedirect: /login
     verificationRedirect: /verify/account/
     resetPassRedirect: /reset/pass/
+
+
+
+

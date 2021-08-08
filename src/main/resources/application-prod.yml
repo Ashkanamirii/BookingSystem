@@ -14,15 +14,15 @@ spring:
       hibernate.jdbc.lob.non_contextual_creation: true
   mail:
     host: smtp.gmail.com
-    port: 587
+    port: ${SPRING_MAIL_PORT}
     username: ${GMAIL_EMAIL}
     password: ${GMAIL_PASS}
     properties:
       mail:
         smtp:
-          auth: true
-          starttls.enable: true
-          starttls.required: true
+          auth: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH}
+          starttls.enable: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE}
+          starttls.required: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_REQUIRED}
 
 app:
   auth:

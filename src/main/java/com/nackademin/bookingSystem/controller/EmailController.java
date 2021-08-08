@@ -40,7 +40,7 @@ public class EmailController {
         try {
             emailService.sendSimpleEmail(email, "Welcome", "This is a welcome test email for you!!");
         } catch (MailException mailException) {
-            return  ResponseEntity.badRequest().body("Unable to send email");
+            return  ResponseEntity.badRequest().body("Unable to send email" + mailException.getStackTrace());
         }
 
         return ResponseEntity.ok("Please check your inbox");

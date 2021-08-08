@@ -20,11 +20,9 @@ spring:
     properties:
       mail:
         smtp:
-          debug: true
           auth: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH}
           starttls.enable: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE}
-          starttls.required: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_REQUIRED}
-    default-encoding: UTF-8
+
 
 app:
   auth:

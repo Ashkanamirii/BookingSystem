@@ -7,6 +7,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 /**
@@ -28,8 +30,12 @@ public class TimeProperties {
 
 
     private double price;
-    private String timeRange;
+//    private String timeRange; //20-21
+//    private String day;
+//    @NotNull
+//    @Size()
     private String availableSlots;
+    //private Club club; Name, nameOfplane
 
 
 

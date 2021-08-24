@@ -23,6 +23,7 @@ spring:
           smtp:
             auth: true
             starttls.enable: true
+
 #uncomment to run security
 #  security:
  #   oauth2:
